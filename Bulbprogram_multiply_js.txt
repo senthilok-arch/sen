@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+
+<p><b>This is<b><sub><b>subscript</b></sub> and <sup></b>superscript</b></sup></p>
+
+
+<bdo dir="rtl">
+This text will go right-to-left.
+</bdo>
+
+
+<p>This is<sub><b>Tour</sub></b>
+and <sup>saturday </sup></p>
+
+
+<head>
+  <base href="https://www.w3schools.com/" target="_blank">
+</head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, 
+				initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script>  
+
+    function turnOnOff(){
+     
+            
+		var num1 = parseFloat(document.getElementById("num1").value);
+      var num2 = parseFloat(document.getElementById("num2").value);
+      
+           
+            if( num1==NaN||num1==undefined||num1==''||num1==0){
+            alert("please enter any number ")
+            
+            } else if( num2==NaN|| num2==''||num2==undefined|| num2==0)				{
+            alert("please enter other number ")
+            
+            } else{
+            
+            let result = 0;
+
+     let image = document.getElementById('Image');
+     
+      if (image.src.match("ONbulb")){
+      
+        document.getElementById("num1").value = 0;
+            document.getElementById("num2").value = 0;
+            
+                  document.getElementById("answer").innerText = result;
+      	image.src = "https://media.geeksforgeeks.org/wp-content/uploads/OFFbulb.jpg";
+        
+      }else{
+       	
+            result = num1 * num2;
+
+        document.getElementById("answer").innerText =result;
+		image.src ="https://media.geeksforgeeks.org/wp-content/uploads/ONbulb.jpg";
+        }
+        }
+    }
+	 
+     
+	</script>
+<input type="number" id="num1" value="0" placeholder="Enter a number"/>
+<input type="number" id="num2" value="0" placeholder="Enter a number"/>
+
+<span id="answer">0</span>
+	<img id="Image" onclick="turnOnOff()" src=
+"https://media.geeksforgeeks.org/wp-content/uploads/OFFbulb.jpg">
+
+	<p>
+		Click on the bulb to turn it ON and OFF
+	</p>
+</body>
+
+</html>
+
+<body>
+<img src="images/stickman.gif" width="24" height="39" alt="Stickman">
+<a href="tags/tag_base.asp">HTML base Tag</a>
+</body>
+<h1>The button Element</h1>
+
+<button type="button" onclick="alert('Hello world!')">Click Me!</button>
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button1 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #04AA6D;
+}
+
+.button1:hover {
+  background-color: #04AA6D;
+  color: white;
+}
+
+.button2 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+</style>
+</head>
+<body>
+
+<h1>The button element - Styled with CSS</h1>
+
+<p>Use the :hover selector to change the style of the button when you move the mouse over it.</p>
+<p><strong>Tip:</strong> Use the transition-duration property to determine the speed of the "hover" effect:</p>
+
+<button class="button button1">Green</button>
+<button class="button button2">Blue</button>
+
+</body>
+</html>
+
