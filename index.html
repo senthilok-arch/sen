@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
   <title>Dog Auto Race 🐶🚕</title>
@@ -12,29 +13,76 @@
 <button onclick="start()">Start</button>
 <button onclick="move()">Move</button>
 
+<p id="status"></p>
 <div id="track"></div>
 
 <script>
 const API = "https://senthil.onrender.com";
 
+// Show messages on UI
+function showStatus(msg) {
+  document.getElementById("status").innerText = msg;
+}
+
+// Safe fetch (handles HTML / errors / JSON issues)
+async function safeFetch(url, options = {}) {
+  try {
+    const res = await fetch(url, options);
+    const text = await res.text();
+
+    console.log("RAW RESPONSE:", text);
+
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      throw new Error("Response is NOT JSON → " + text);
+    }
+  } catch (err) {
+    console.error(err);
+    showStatus("❌ " + err.message);
+    return null;
+  }
+}
+
 async function join() {
-  let name = document.getElementById("dogName").value;
-  await fetch(`${API}/join/${name}`, { method: "POST" });
-  update();
+  let name = document.getElementById("dogName").value.trim();
+
+  if (!name) {
+    showStatus("⚠️ Enter a dog name");
+    return;
+  }
+
+  let data = await safeFetch(`${API}/join/${name}`, { method: "POST" });
+
+  if (data) {
+    showStatus(data.message || data.error);
+    update();
+  }
 }
 
 async function start() {
-  await fetch(`${API}/start`, { method: "POST" });
+  let data = await safeFetch(`${API}/start`, { method: "POST" });
+
+  if (data) {
+    showStatus(data.message || data.error);
+  }
 }
 
 async function move() {
-  await fetch(`${API}/move`, { method: "POST" });
-  update();
+  let data = await safeFetch(`${API}/move`, { method: "POST" });
+
+  if (data) {
+    if (data.winner) {
+      alert("🏆 Winner: " + data.winner);
+    }
+    update();
+  }
 }
 
 async function update() {
-  let res = await fetch(`${API}/state`);
-  let data = await res.json();
+  let data = await safeFetch(`${API}/state`);
+
+  if (!data) return;
 
   let track = document.getElementById("track");
   track.innerHTML = "";
@@ -42,12 +90,8 @@ async function update() {
   for (let dog in data.players) {
     let div = document.createElement("div");
     div.innerText = dog + " 🐶";
-    div.style.marginLeft = data.players[dog].position * 5 + "px";
+    div.style.marginLeft = (data.players[dog].position * 5) + "px";
     track.appendChild(div);
-  }
-
-  if (data.winner) {
-    alert("🏆 Winner: " + data.winner);
   }
 }
 </script>
