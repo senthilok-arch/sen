@@ -2,35 +2,23 @@
 <html>
 <head>
   <title>Dog Auto Race 🐶🚕</title>
-  <style>
-    body { font-family: Arial; text-align: center; }
-    .track { width: 80%; margin: 20px auto; }
-    .dog {
-      background: orange;
-      margin: 10px;
-      padding: 10px;
-      width: 50px;
-      transition: margin-left 0.5s;
-    }
-  </style>
 </head>
 
 <body>
-
 <h1>🐶 Dog Auto Race 🚕</h1>
 
-<input id="dogName" placeholder="Enter dog name">
+<input id="dogName" placeholder="Dog name">
 <button onclick="join()">Join</button>
-<button onclick="start()">Start Race</button>
+<button onclick="start()">Start</button>
 <button onclick="move()">Move</button>
 
-<div class="track" id="track"></div>
+<div id="track"></div>
 
 <script>
 const API = "https://senthil.onrender.com";
 
 async function join() {
-  const name = document.getElementById("dogName").value;
+  let name = document.getElementById("dogName").value;
   await fetch(`${API}/join/${name}`, { method: "POST" });
   update();
 }
@@ -45,18 +33,17 @@ async function move() {
 }
 
 async function update() {
-  const res = await fetch(`${API}/state`);
-  const data = await res.json();
+  let res = await fetch(`${API}/state`);
+  let data = await res.json();
 
-  const track = document.getElementById("track");
+  let track = document.getElementById("track");
   track.innerHTML = "";
 
   for (let dog in data.players) {
-    const d = document.createElement("div");
-    d.className = "dog";
-    d.innerText = dog + " (" + data.players[dog].status + ")";
-    d.style.marginLeft = data.players[dog].position * 5 + "px";
-    track.appendChild(d);
+    let div = document.createElement("div");
+    div.innerText = dog + " 🐶";
+    div.style.marginLeft = data.players[dog].position * 5 + "px";
+    track.appendChild(div);
   }
 
   if (data.winner) {
