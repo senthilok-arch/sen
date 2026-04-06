@@ -1,8 +1,13 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 import random
 
 app = FastAPI()
 
+
+@app.get("/")
+def serve_ui():
+    return FileResponse("index.html")
 # Game state
 game = {
     "players": {},
