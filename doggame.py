@@ -16,6 +16,7 @@ app.add_middleware(
 @app.get("/")
 def serve_ui():
     return FileResponse("index.html")
+
 # Game state
 game = {
     "players": {},
@@ -49,15 +50,14 @@ def move():
 
     for dog in game["players"]:
         if game["players"][dog]["status"] == "running":
-            move = random.randint(1, 10)
-            game["players"][dog]["position"] += move
+            step = random.randint(1, 10)
+            game["players"][dog]["position"] += step
 
     # Collision logic
     positions = {}
     for dog, data in game["players"].items():
         pos = data["position"]
         if pos in positions:
-            # collision → topple
             game["players"][dog]["status"] = "toppled"
             game["players"][positions[pos]]["status"] = "toppled"
         else:
@@ -75,3 +75,12 @@ def move():
 @app.get("/state")
 def get_state():
     return game
+
+
+# 🔄 RESET API (added here)
+@app.post("/reset")
+def reset_game():
+    game["players"].clear()
+    game["race_started"] = False
+    game["winner"] = None
+    return {"message": "Game reset 🔄"}
