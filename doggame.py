@@ -80,10 +80,16 @@ def get_state():
     return game
 
 
-# 🔄 RESET API
+# 🔄 RESET API (final)
 @app.post("/reset")
 def reset_game():
     game["players"].clear()
     game["race_started"] = False
     game["winner"] = None
-    return {"message": "Game reset 🔄"}
+
+    print("RESET CALLED ✅")  # debug log (check in Render logs)
+
+    return {
+        "message": "Game reset 🔄",
+        "game": game
+    }
