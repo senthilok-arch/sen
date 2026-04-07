@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Bike → Robot Transformer 🤖🏍️</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle, #111, #000);
+      font-family: Arial;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .scene {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      margin: auto;
+    }
+
+    .part {
+      position: absolute;
+      transition: all 1s ease-in-out;
+    }
+
+    /* BIKE PARTS */
+    .wheel {
+      width: 80px;
+      height: 80px;
+      border: 6px solid #00f;
+      border-radius: 50%;
+      bottom: 0;
+    }
+
+    .wheel.left {
+      left: 20px;
+    }
+
+    .wheel.right {
+      right: 20px;
+    }
+
+    .body {
+      width: 120px;
+      height: 20px;
+      background: cyan;
+      bottom: 60px;
+      left: 90px;
+    }
+
+    /* ROBOT PARTS */
+    .head {
+      width: 50px;
+      height: 50px;
+      background: red;
+      top: 20px;
+      left: 125px;
+      opacity: 0;
+    }
+
+    .arm {
+      width: 20px;
+      height: 80px;
+      background: yellow;
+      top: 80px;
+      opacity: 0;
+    }
+
+    .arm.left { left: 80px; }
+    .arm.right { right: 80px; }
+
+    .leg {
+      width: 20px;
+      height: 90px;
+      background: lime;
+      bottom: 0;
+      opacity: 0;
+    }
+
+    .leg.left { left: 110px; }
+    .leg.right { right: 110px; }
+
+    /* TRANSFORM STATE */
+    .transform .wheel.left {
+      transform: translate(80px, -80px) rotate(360deg);
+    }
+
+    .transform .wheel.right {
+      transform: translate(-80px, -80px) rotate(-360deg);
+    }
+
+    .transform .body {
+      transform: translateY(-100px) scale(0.5);
+    }
+
+    .transform .head,
+    .transform .arm,
+    .transform .leg {
+      opacity: 1;
+    }
+
+    .transform .arm.left {
+      transform: translateX(-30px);
+    }
+
+    .transform .arm.right {
+      transform: translateX(30px);
+    }
+
+    .transform .leg.left {
+      transform: translateY(-20px);
+    }
+
+    .transform .leg.right {
+      transform: translateY(-20px);
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background: cyan;
+      color: black;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #00ffff;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <h1>🏍️ → 🤖 Transformer</h1>
+
+  <div class="scene" id="scene">
+    <!-- Bike -->
+    <div class="part wheel left"></div>
+    <div class="part wheel right"></div>
+    <div class="part body"></div>
+
+```
+<!-- Robot -->
+<div class="part head"></div>
+<div class="part arm left"></div>
+<div class="part arm right"></div>
+<div class="part leg left"></div>
+<div class="part leg right"></div>
+```
+
+  </div>
+
+<button onclick="transform()">Transform 🚀</button>
+
+</div>
+
+<script>
+function transform() {
+  document.getElementById("scene").classList.toggle("transform");
+}
+</script>
+
+</body>
+</html>
