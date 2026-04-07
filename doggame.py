@@ -38,10 +38,12 @@ def join_game(dog_name: str):
 
     return {"message": f"{dog_name} joined the race 🐶"}
 
+
 @app.post("/start")
 def start_race():
     game["race_started"] = True
     return {"message": "Race started 🚕💨"}
+
 
 @app.post("/move")
 def move():
@@ -72,12 +74,13 @@ def move():
 
     return game
 
+
 @app.get("/state")
 def get_state():
     return game
 
 
-# 🔄 RESET API (added here)
+# 🔄 RESET API
 @app.post("/reset")
 def reset_game():
     game["players"].clear()
