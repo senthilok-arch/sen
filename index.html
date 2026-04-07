@@ -33,7 +33,6 @@
       border: none;
       width: 80%;
       margin-bottom: 10px;
-      outline: none;
     }
 
     button {
@@ -70,7 +69,6 @@
       background: rgba(255,255,255,0.15);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
     }
 
     .progress {
@@ -96,7 +94,6 @@
       border-radius: 50%;
       border: 3px solid white;
       object-fit: cover;
-      box-shadow: 0 0 10px rgba(255,255,255,0.8);
     }
 
     .dog-name {
@@ -107,23 +104,11 @@
     .finish {
       position: absolute;
       right: 0;
-      top: 0;
       height: 100%;
       width: 8px;
       background: gold;
-      box-shadow: 0 0 10px gold;
-    }
-
-    .winner {
-      animation: glow 0.5s infinite alternate;
-    }
-
-    @keyframes glow {
-      from { box-shadow: 0 0 10px gold; }
-      to { box-shadow: 0 0 25px red; }
     }
   </style>
-
 </head>
 
 <body>
@@ -135,6 +120,11 @@
   <br>
   <button class="join-btn" onclick="join()">Join</button>
   <button class="start-btn" onclick="startRace()">Start Race</button>
+
+  <!-- ✅ Reset button -->
+  <button onclick="resetGame()" style="background:#feca57;color:black;">
+    Reset
+  </button>
 </div>
 
 <p id="status"></p>
@@ -185,6 +175,19 @@ async function startRace() {
   }, 500);
 }
 
+async function resetGame() {
+  if (interval) {
+    clearInterval(interval);
+    interval = null;
+  }
+
+  await safeFetch(`${API}/reset`, { method: "POST" });
+
+  document.getElementById("track").innerHTML = "";
+  document.getElementById("status").innerText = "🔄 Game reset!";
+  document.getElementById("dogName").value = "";
+}
+
 async function render() {
   let data = await safeFetch(`${API}/state`);
   if (!data) return;
@@ -204,8 +207,6 @@ async function render() {
     dogDiv.className = "dog";
 
     let img = document.createElement("img");
-
-    // 🐕 Real dog image (unique per dog)
     img.src = `https://placedog.net/200?id=${dog.length * 7}`;
 
     let name = document.createElement("div");
@@ -227,56 +228,7 @@ async function render() {
     track.appendChild(lane);
   }
 }
-    <div class="controls">
-  <input id="dogName" placeholder="Enter dog name 🐕">
-  <br>
-  <button class="join-btn" onclick="join()">Join</button>
-  <button class="start-btn" onclick="startRace()">Start Race</button>
-
-  <!-- 🔄 Reset Button Added -->
-  <button onclick="resetGame()" style="
-    background:#feca57;
-    color:black;
-    padding:10px 15px;
-    border-radius:10px;
-    border:none;
-    margin:5px;
-    cursor:pointer;
-    font-weight:bold;
-  ">
-    Reset
-
-    async function resetGame() {
-  try {
-    // Stop race loop
-    if (interval) {
-      clearInterval(interval);
-    }
-
-    // Call backend reset
-    let res = await fetch(`${API}/reset`, { method: "POST" });
-    let data = await res.json();
-
-    console.log("RESET:", data);
-
-    // Clear UI
-    document.getElementById("track").innerHTML = "";
-
-    // Reset message
-    document.getElementById("status").innerText = "🔄 Game reset! Add new dogs 🐕";
-
-    // Clear input
-    document.getElementById("dogName").value = "";
-
-  } catch (err) {
-    console.error(err);
-    document.getElementById("status").innerText = "❌ Reset failed";
-  }
-}
 </script>
 
-
-  </button>
-</div>
 </body>
 </html>
