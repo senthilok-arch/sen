@@ -247,6 +247,34 @@ async function render() {
     font-weight:bold;
   ">
     Reset
+
+    async function resetGame() {
+  try {
+    // Stop race loop
+    if (interval) {
+      clearInterval(interval);
+    }
+
+    // Call backend reset
+    let res = await fetch(`${API}/reset`, { method: "POST" });
+    let data = await res.json();
+
+    console.log("RESET:", data);
+
+    // Clear UI
+    document.getElementById("track").innerHTML = "";
+
+    // Reset message
+    document.getElementById("status").innerText = "🔄 Game reset! Add new dogs 🐕";
+
+    // Clear input
+    document.getElementById("dogName").value = "";
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("status").innerText = "❌ Reset failed";
+  }
+}
   </button>
 </div>
 </body>
