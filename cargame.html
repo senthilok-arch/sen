@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Futuristic Car Game</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+  }
+
+  canvas {
+    display: block;
+    margin: auto;
+    background: #111;
+    border: 2px solid cyan;
+  }
+
+  h2 {
+    color: cyan;
+  }
+</style>
+</head>
+<body>
+
+<h2>🚗 Futuristic Car Survival</h2>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let player = {
+  x: 180,
+  y: 500,
+  width: 40,
+  height: 70,
+  speed: 5
+};
+
+let enemies = [];
+let keys = {};
+let score = 0;
+let gameOver = false;
+
+// Controls
+document.addEventListener("keydown", (e) => keys[e.key] = true);
+document.addEventListener("keyup", (e) => keys[e.key] = false);
+
+// Spawn enemy cars
+function spawnEnemy() {
+  let x = Math.random() * (canvas.width - 40);
+  enemies.push({ x: x, y: -80, width: 40, height: 70, speed: 3 + Math.random()*2 });
+}
+
+// Draw futuristic car
+function drawCar(x, y, color) {
+  ctx.fillStyle = color;
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = color;
+  ctx.fillRect(x, y, 40, 70);
+  ctx.shadowBlur = 0;
+}
+
+// Game loop
+function update() {
+  if (gameOver) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Move player
+  if (keys["ArrowLeft"]) player.x -= player.speed;
+  if (keys["ArrowRight"]) player.x += player.speed;
+  if (keys["ArrowUp"]) player.y -= player.speed;
+  if (keys["ArrowDown"]) player.y += player.speed;
+
+  // Boundaries
+  player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+  player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
+
+  // Draw player
+  drawCar(player.x, player.y, "cyan");
+
+  // Enemies
+  enemies.forEach((enemy, index) => {
+    enemy.y += enemy.speed;
+    drawCar(enemy.x, enemy.y, "red");
+
+    // Collision
+    if (
+      player.x < enemy.x + enemy.width &&
+      player.x + player.width > enemy.x &&
+      player.y < enemy.y + enemy.height &&
+      player.y + player.height > enemy.y
+    ) {
+      gameOver = true;
+      sendScore();
+      alert("💥 Game Over! Score: " + score);
+    }
+
+    // Remove off screen
+    if (enemy.y > canvas.height) {
+      enemies.splice(index, 1);
+      score++;
+    }
+  });
+
+  // Score display
+  ctx.fillStyle = "white";
+  ctx.fillText("Score: " + score, 10, 20);
+
+  requestAnimationFrame(update);
+}
+
+// Spawn loop
+setInterval(spawnEnemy, 1000);
+
+// Send score to backend
+function sendScore() {
+  fetch("http://localhost:8000/score", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ score: score })
+  });
+}
+
+update();
+</script>
+
+</body>
+</html>
