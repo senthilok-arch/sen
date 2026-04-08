@@ -35,9 +35,10 @@ button {
 #status {
   margin-top: 10px;
   color: red;
+  font-weight: bold;
 }
 
-/* ===== YOUR EXISTING TRANSFORMER ===== */
+/* ===== TRANSFORMER ===== */
 
 .stage {
   width: 300px;
@@ -135,22 +136,30 @@ button {
 </div>
 
 <script>
+let gameStarted = false;
+
 function startGame() {
 
   let dog1 = document.getElementById("dog1").value.trim();
   let dog2 = document.getElementById("dog2").value.trim();
+  let status = document.getElementById("status");
 
   // ❌ VALIDATION
   if (!dog1 || !dog2) {
-    document.getElementById("status").innerText =
-      "❌ Please enter at least 2 dog names 🐕🐕";
+    status.innerText = "🚫 Game cannot start — please enter TWO dog names 🐕🐕";
     return;
   }
 
-  // ✅ CLEAR ERROR
-  document.getElementById("status").innerText = "";
+  // ❌ PREVENT MULTIPLE START
+  if (gameStarted) {
+    status.innerText = "⚠️ Game already started!";
+    return;
+  }
 
-  // 🚀 START TRANSFORMATION
+  // ✅ START GAME
+  gameStarted = true;
+  status.innerText = "✅ Race Started!";
+
   document.body.classList.add("active");
 }
 </script>
