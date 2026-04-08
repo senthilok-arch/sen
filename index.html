@@ -187,6 +187,28 @@ async function resetGame() {
   document.getElementById("status").innerText = "🔄 Game reset!";
   document.getElementById("dogName").value = "";
 }
+  async function joinMultiple() {
+  let dog1 = document.getElementById("dog1").value.trim();
+  let dog2 = document.getElementById("dog2").value.trim();
+
+  if (!dog1 && !dog2) {
+    alert("Enter at least one dog name");
+    return;
+  }
+
+  // Join Dog 1
+  if (dog1) {
+    await safeFetch(`${API}/join/${dog1}`, { method: "POST" });
+  }
+
+  // Join Dog 2
+  if (dog2) {
+    await safeFetch(`${API}/join/${dog2}`, { method: "POST" });
+  }
+
+  document.getElementById("status").innerText = "🐕 Dogs joined!";
+  render();
+}
 async function joinMultiple() {
   let dog1 = document.getElementById("dog1").value.trim();
   let dog2 = document.getElementById("dog2").value.trim();
