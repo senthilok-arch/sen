@@ -2,21 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Robot + Dog Validation</title>
+<title>Dog Race Validation</title>
 
 <style>
 body {
-  margin: 0;
-  height: 100vh;
-  background: #050505;
-  color: white;
-  text-align: center;
   font-family: Arial;
-}
-
-/* INPUT UI */
-.controls {
-  margin-top: 20px;
+  text-align: center;
+  margin-top: 50px;
+  background: #111;
+  color: white;
 }
 
 input {
@@ -28,117 +22,33 @@ input {
 
 button {
   padding: 10px 20px;
-  margin: 5px;
+  margin-top: 10px;
   cursor: pointer;
 }
 
 #status {
-  margin-top: 10px;
-  color: red;
+  margin-top: 15px;
   font-weight: bold;
-}
-
-/* ===== TRANSFORMER ===== */
-
-.stage {
-  width: 300px;
-  height: 300px;
-  margin: 50px auto;
-  transform-style: preserve-3d;
-  transform: rotateX(-20deg) rotateY(30deg);
-  transition: 1s;
-}
-
-.active .stage {
-  transform: rotateX(-10deg) rotateY(-20deg) translateY(50px);
-}
-
-.part {
-  position: absolute;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  transition: 0.8s;
-}
-
-.torso {
-  width: 60px; height: 80px;
-  left: 120px; top: 100px;
-}
-
-.head {
-  width: 30px; height: 30px;
-  left: 135px; top: 70px;
-  background: red;
-}
-
-.arm {
-  width: 15px; height: 80px;
-  top: 100px;
-}
-
-.arm.left { left: 100px; }
-.arm.right { left: 185px; }
-
-.leg {
-  width: 25px; height: 100px;
-  top: 180px;
-}
-
-.leg.left { left: 120px; }
-.leg.right { left: 155px; }
-
-/* ACTIVE TRANSFORM */
-
-.active .torso {
-  transform: rotateX(80deg);
-}
-
-.active .head {
-  transform: translateY(40px);
-}
-
-.active .arm.left {
-  transform: rotateZ(-90deg);
-}
-
-.active .arm.right {
-  transform: rotateZ(90deg);
-}
-
-.active .leg {
-  height: 40px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>🐶 Dog Validation + 🤖 Transformer</h2>
+<h2>🐶 Dog Race</h2>
 
-<div class="controls">
-  <input id="dog1" placeholder="Dog 1">
-  <input id="dog2" placeholder="Dog 2">
-  <br>
+<input id="dog1" placeholder="Enter Dog 1 Name">
+<input id="dog2" placeholder="Enter Dog 2 Name">
+<br>
 
-  <button onclick="startGame()">Start Race</button>
-</div>
+<button onclick="startRace()">Start Race</button>
 
 <p id="status"></p>
-
-<!-- 🤖 TRANSFORMER -->
-<div class="stage">
-  <div class="part torso"></div>
-  <div class="part head"></div>
-  <div class="part arm left"></div>
-  <div class="part arm right"></div>
-  <div class="part leg left"></div>
-  <div class="part leg right"></div>
-</div>
 
 <script>
 let gameStarted = false;
 
-function startGame() {
+function startRace() {
 
   let dog1 = document.getElementById("dog1").value.trim();
   let dog2 = document.getElementById("dog2").value.trim();
@@ -146,21 +56,22 @@ function startGame() {
 
   // ❌ VALIDATION
   if (!dog1 || !dog2) {
-    status.innerText = "🚫 Game cannot start — please enter TWO dog names 🐕🐕";
+    status.innerText = "🚫 Please enter TWO dog names to start the race 🐕🐕";
+    status.style.color = "red";
     return;
   }
 
   // ❌ PREVENT MULTIPLE START
   if (gameStarted) {
-    status.innerText = "⚠️ Game already started!";
+    status.innerText = "⚠️ Race already started!";
+    status.style.color = "orange";
     return;
   }
 
-  // ✅ START GAME
+  // ✅ START RACE
   gameStarted = true;
-  status.innerText = "✅ Race Started!";
-
-  document.body.classList.add("active");
+  status.innerText = `🏁 Race started between ${dog1} and ${dog2}!`;
+  status.style.color = "lightgreen";
 }
 </script>
 
