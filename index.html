@@ -2,30 +2,84 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dog Race Validation</title>
+<title>Dog Race Game</title>
 
 <style>
 body {
-  font-family: Arial;
+  font-family: 'Segoe UI', sans-serif;
   text-align: center;
-  margin-top: 50px;
-  background: #111;
-  color: white;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
 }
 
+/* Card */
+.container {
+  background: white;
+  margin: 40px auto;
+  padding: 25px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* Inputs */
 input {
-  padding: 10px;
-  margin: 5px;
+  padding: 12px;
+  margin: 10px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid #ccc;
+  width: 40%;
 }
 
+/* Button */
 button {
-  padding: 10px 20px;
-  margin-top: 10px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  background: #4CAF50;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
 }
 
+button:hover {
+  background: #45a049;
+}
+
+/* Track */
+.track {
+  position: relative;
+  margin-top: 30px;
+  height: 120px;
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Finish line */
+.finish {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background: red;
+}
+
+/* Dogs */
+.dog {
+  position: absolute;
+  left: 0;
+  width: 80px;
+  transition: left 0.2s linear;
+}
+
+#dog1img { top: 10px; }
+#dog2img { top: 60px; }
+
+/* Status */
 #status {
   margin-top: 15px;
   font-weight: bold;
@@ -35,43 +89,77 @@ button {
 
 <body>
 
-<h2>🐶 Dog Race</h2>
+<div class="container">
+  <h2>🐶 Dog Race</h2>
 
-<input id="dog1" placeholder="Enter Dog 1 Name">
-<input id="dog2" placeholder="Enter Dog 2 Name">
-<br>
+  <input id="dog1" placeholder="Dog 1 Name">
+  <input id="dog2" placeholder="Dog 2 Name"><br>
 
-<button onclick="startRace()">Start Race</button>
+  <button onclick="startRace()">Start Race</button>
 
-<p id="status"></p>
+  <p id="status"></p>
+
+  <div class="track">
+    <div class="finish"></div>
+
+    <!-- Real dog images -->
+    <img id="dog1img" class="dog" src="https://placedog.net/100/80?id=1">
+    <img id="dog2img" class="dog" src="https://placedog.net/100/80?id=2">
+  </div>
+</div>
 
 <script>
 let gameStarted = false;
 
 function startRace() {
-
   let dog1 = document.getElementById("dog1").value.trim();
   let dog2 = document.getElementById("dog2").value.trim();
   let status = document.getElementById("status");
 
   // ❌ VALIDATION
   if (!dog1 || !dog2) {
-    status.innerText = "🚫 Please enter TWO dog names to start the race 🐕🐕";
+    status.innerText = "🚫 Enter TWO dog names!";
     status.style.color = "red";
     return;
   }
 
-  // ❌ PREVENT MULTIPLE START
   if (gameStarted) {
-    status.innerText = "⚠️ Race already started!";
+    status.innerText = "⚠️ Race already running!";
     status.style.color = "orange";
     return;
   }
 
-  // ✅ START RACE
   gameStarted = true;
-  status.innerText = `🏁 Race started between ${dog1} and ${dog2}!`;
-  status.style.color = "lightgreen";
+  status.innerText = "🏁 Race Started!";
+  status.style.color = "green";
+
+  let dog1Pos = 0;
+  let dog2Pos = 0;
+
+  let dog1Img = document.getElementById("dog1img");
+  let dog2Img = document.getElementById("dog2img");
+
+  let trackWidth = document.querySelector(".track").offsetWidth - 100;
+
+  let race = setInterval(() => {
+    dog1Pos += Math.random() * 10;
+    dog2Pos += Math.random() * 10;
+
+    dog1Img.style.left = dog1Pos + "px";
+    dog2Img.style.left = dog2Pos + "px";
+
+    if (dog1Pos >= trackWidth || dog2Pos >= trackWidth) {
+      clearInterval(race);
+
+      if (dog1Pos > dog2Pos) {
+        status.innerText = `🏆 ${dog1} wins!`;
+      } else {
+        status.innerText = `🏆 ${dog2} wins!`;
+      }
+
+      gameStarted = false;
+    }
+  }, 100);
 }
 </script>
 
