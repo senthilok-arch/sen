@@ -2,75 +2,141 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Futuristic Car Game</title>
+<title>Futuristic Neon Racer</title>
 <style>
   body {
     margin: 0;
     overflow: hidden;
-    background: black;
+    background: #050505;
     color: white;
-    font-family: Arial;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
   }
 
   canvas {
     display: block;
-    margin: auto;
-    background: #111;
-    border: 2px solid cyan;
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #111 0%, #222 100%);
+    border: 3px solid #00f2ff;
+    box-shadow: 0 0 20px #00f2ff55;
   }
 
   h2 {
-    color: cyan;
+    color: #00f2ff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 10px;
+  }
+
+  .ui-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    border: 2px solid cyan;
+    display: none;
+    z-index: 10;
   }
 </style>
 </head>
 <body>
 
-<h2>🚗 Futuristic Car Survival</h2>
+<h2>🚀 Neon Velocity</h2>
+<div id="statusOverlay" class="ui-overlay">
+    <h1 id="statusText">GAME OVER</h1>
+    <p id="finalScore"></p>
+    <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer; background: cyan; border: none; font-weight: bold;">RETRY</button>
+</div>
 <canvas id="gameCanvas" width="400" height="600"></canvas>
 
 <script>
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const overlay = document.getElementById("statusOverlay");
+const statusText = document.getElementById("statusText");
+const finalScoreText = document.getElementById("finalScore");
 
 let player = {
   x: 180,
   y: 500,
-  width: 40,
-  height: 70,
-  speed: 5
+  width: 45,
+  height: 80,
+  speed: 6
 };
 
 let enemies = [];
 let keys = {};
 let score = 0;
 let gameOver = false;
+let gameWon = false;
 
 // Controls
 document.addEventListener("keydown", (e) => keys[e.key] = true);
 document.addEventListener("keyup", (e) => keys[e.key] = false);
 
-// Spawn enemy cars
 function spawnEnemy() {
-  let x = Math.random() * (canvas.width - 40);
-  enemies.push({ x: x, y: -80, width: 40, height: 70, speed: 3 + Math.random()*2 });
+  if (gameOver || gameWon) return;
+  let x = Math.random() * (canvas.width - 45);
+  // Faster enemies as score increases
+  let baseSpeed = 4 + (score / 20);
+  enemies.push({ x: x, y: -100, width: 45, height: 80, speed: baseSpeed });
 }
 
-// Draw futuristic car
-function drawCar(x, y, color) {
-  ctx.fillStyle = color;
-  ctx.shadowBlur = 20;
+// Drawing an "Animated" Futuristic Box Car
+function drawAnimatedCar(x, y, color, isPlayer) {
+  ctx.save();
+  
+  // Neon Glow Effect
+  ctx.shadowBlur = 15;
   ctx.shadowColor = color;
-  ctx.fillRect(x, y, 40, 70);
-  ctx.shadowBlur = 0;
+  
+  // Main Body (The Box)
+  ctx.fillStyle = "#222";
+  ctx.fillRect(x, y, 45, 80);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, 45, 80);
+
+  // Cockpit/Windshield
+  ctx.fillStyle = isPlayer ? "rgba(0, 242, 255, 0.5)" : "rgba(255, 0, 0, 0.5)";
+  ctx.fillRect(x + 5, y + 20, 35, 25);
+
+  // Animated Wheels (Simple rectangles that flicker/pulse)
+  let wheelFlicker = Math.sin(Date.now() / 50) * 2;
+  ctx.fillStyle = "#444";
+  ctx.fillRect(x - 5, y + 10, 5, 15 + wheelFlicker); // Top Left
+  ctx.fillRect(x + 45, y + 10, 5, 15 + wheelFlicker); // Top Right
+  ctx.fillRect(x - 5, y + 55, 5, 15 + wheelFlicker); // Bottom Left
+  ctx.fillRect(x + 45, y + 55, 5, 15 + wheelFlicker); // Bottom Right
+
+  // Headlights
+  ctx.fillStyle = isPlayer ? "white" : "#ffaa00";
+  if (isPlayer) {
+      ctx.fillRect(x + 5, y, 10, 5);
+      ctx.fillRect(x + 30, y, 10, 5);
+  } else {
+      ctx.fillRect(x + 5, y + 75, 10, 5);
+      ctx.fillRect(x + 30, y + 75, 10, 5);
+  }
+
+  ctx.restore();
 }
 
-// Game loop
 function update() {
-  if (gameOver) return;
+  if (gameOver || gameWon) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw Road Lines (Moving effect)
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+  ctx.setLineDash([20, 20]);
+  ctx.lineDashOffset = -score * 5; 
+  ctx.beginPath();
+  ctx.moveTo(200, 0); ctx.lineTo(200, 600);
+  ctx.stroke();
+  ctx.setLineDash([]);
 
   // Move player
   if (keys["ArrowLeft"]) player.x -= player.speed;
@@ -78,54 +144,73 @@ function update() {
   if (keys["ArrowUp"]) player.y -= player.speed;
   if (keys["ArrowDown"]) player.y += player.speed;
 
-  // Boundaries
   player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
   player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
 
-  // Draw player
-  drawCar(player.x, player.y, "cyan");
+  drawAnimatedCar(player.x, player.y, "#00f2ff", true);
 
   // Enemies
   enemies.forEach((enemy, index) => {
     enemy.y += enemy.speed;
-    drawCar(enemy.x, enemy.y, "red");
+    drawAnimatedCar(enemy.x, enemy.y, "#ff0055", false);
 
-    // Collision
+    // Collision Detection
     if (
       player.x < enemy.x + enemy.width &&
       player.x + player.width > enemy.x &&
       player.y < enemy.y + enemy.height &&
       player.y + player.height > enemy.y
     ) {
-      gameOver = true;
-      sendScore();
-      alert("💥 Game Over! Score: " + score);
+      endGame(false);
     }
 
-    // Remove off screen
+    // Score and Remove
     if (enemy.y > canvas.height) {
       enemies.splice(index, 1);
       score++;
+      
+      // Check Win Condition
+      if (score >= 100) {
+        endGame(true);
+      }
     }
   });
 
-  // Score display
+  // UI Score
+  ctx.fillStyle = "cyan";
+  ctx.font = "bold 18px Arial";
+  ctx.fillText("SCORE: " + score, 20, 30);
   ctx.fillStyle = "white";
-  ctx.fillText("Score: " + score, 10, 20);
+  ctx.fillText("GOAL: 100", 310, 30);
 
   requestAnimationFrame(update);
 }
 
-// Spawn loop
+function endGame(isWin) {
+  if (isWin) {
+    gameWon = true;
+    statusText.innerText = "🏆 MISSION ACCOMPLISHED!";
+    statusText.style.color = "gold";
+  } else {
+    gameOver = true;
+    statusText.innerText = "💥 CRASHED!";
+    statusText.style.color = "red";
+  }
+  
+  finalScoreText.innerText = "Final Score: " + score;
+  overlay.style.display = "block";
+  sendScore();
+}
+
 setInterval(spawnEnemy, 1000);
 
-// Send score to backend
 function sendScore() {
+  // Silent fail if backend isn't running
   fetch("http://localhost:8000/score", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ score: score })
-  });
+  }).catch(e => console.log("Backend not active, score saved locally."));
 }
 
 update();
